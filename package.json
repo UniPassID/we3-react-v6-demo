@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@unipasswallet/popup-types": "^1.0.1",
-    "@unipasswallet/web3-react-v6-connector": "^1.0.1",
+    "@unipasswallet/web3-react-v6-connector": "^1.1.0",
     "@web3-react/core": "^6.1.9",
     "@web3-react/types": "^6.0.7",
     "antd": "^5.1.4",

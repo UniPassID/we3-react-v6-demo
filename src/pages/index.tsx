@@ -6,14 +6,16 @@ import { etherToWei, weiToEther } from "@/unipass/format_bignumber";
 import { verifySiweMessage } from "@/unipass/verify_message";
 import { unipass as unipassConnector } from "../unipass/connector";
 import logo from "../assets/UniPass.svg";
+import { providers } from "ethers";
 
 const { TextArea } = Input;
 
 export default function HomePage() {
-  const { active, library, activate, account, chainId, deactivate } =
+  const { active, library, activate, account, chainId, deactivate, connector } =
     useWeb3React();
 
   const provider = library;
+
   const [balance, setBalance] = useState("0");
   const [signature, setSignature] = useState("");
   const [typedSignature, setTypedSignature] = useState("");
@@ -54,7 +56,7 @@ export default function HomePage() {
 
   const signMessage = async () => {
     if (provider) {
-      const signer = provider.getSigner(account);
+      const signer = provider.getSigner(account!);
       const signature = await signer.signMessage("web3-react test message");
       console.log(signature);
       setSignature(signature);
@@ -109,7 +111,7 @@ export default function HomePage() {
           contents: "Hello, Bob!",
         },
       };
-      const signer = provider.getSigner(account);
+      const signer = provider.getSigner(account!);
       const signature = await signer._signTypedData(
         eip712DemoData.domain,
         eip712DemoData.types,
@@ -122,9 +124,9 @@ export default function HomePage() {
   const sendTransaction = async () => {
     if (provider) {
       setSendNativeLoading(true);
-      const signer = provider.getSigner(account);
+      const signer = provider.getSigner(account!);
       const txParams = {
-        from: account,
+        from: account!,
         to: "0x2B6c74b4e8631854051B1A821029005476C3AF06",
         value: etherToWei("0.001"),
         data: "0x",
@@ -185,12 +187,28 @@ export default function HomePage() {
     );
   };
 
+  const changeChainId = async () => {
+    await (provider as providers.Web3Provider).send(
+      "wallet_switchEthereumChain",
+      [{ chainId: 5 }]
+    );
+  };
+
+  const _getBalance = async () => {
+    await library.request({
+      method: "eth_getBalance",
+      params: ["0x4c2b86a1f61f8e08330d16283136b20a4eca5939", "latest"],
+    });
+  };
+
   return (
     <div style={{ marginBottom: "50px", width: "450px" }}>
       <img src={logo} alt="" width={150} />
       <h1>Web3-React V6 + UniPass</h1>
       <h3>Connect with UniPass:</h3>
       {getConnectionButtons()}
+      <button onClick={changeChainId}>changeChainId</button>
+      <button onClick={_getBalance}>_getBalance</button>
       <Divider />
       <h3>Wallet States:</h3>
       <>
