@@ -207,8 +207,6 @@ export default function HomePage() {
       <h1>Web3-React V6 + UniPass</h1>
       <h3>Connect with UniPass:</h3>
       {getConnectionButtons()}
-      <button onClick={changeChainId}>changeChainId</button>
-      <button onClick={_getBalance}>_getBalance</button>
       <Divider />
       <h3>Wallet States:</h3>
       <>
